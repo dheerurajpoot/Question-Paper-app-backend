@@ -27,6 +27,6 @@ mongoose
 	});
 
 app.listen(process.env.PORT, () => {
-	console.log(`Example app listening on port ${process.env.PORT}`);
+	console.log(`Quizz app listening on port ${process.env.PORT}`);
 });
 app.use("/api/v1/user", userRoute);

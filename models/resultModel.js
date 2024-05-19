@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
-var resultSchema = new mongoose.Schema({
+let resultSchema = new mongoose.Schema({
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
 		required: true,
 	},
 	marks: {
-		type: Number,
+		type: String,
 		required: true,
 	},
 });

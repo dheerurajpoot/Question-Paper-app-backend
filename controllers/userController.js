@@ -3,12 +3,11 @@ const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 
 const createUser = async (req, res) => {
-	console.log(req.body);
 	const { name, email, password } = req.body;
 	try {
 		if (!name || !email || !password) {
 			return res.status(401).json({
-				message: "All fields are required !",
+				message: "All fields are required!",
 				success: false,
 			});
 		}
@@ -22,7 +21,7 @@ const createUser = async (req, res) => {
 		// password hashing
 		const hashedPassword = await bcryptjs.hash(password, 12);
 
-		await User.create({
+		const createdUser = await User.create({
 			name,
 			email,
 			password: hashedPassword,
@@ -32,7 +31,11 @@ const createUser = async (req, res) => {
 			success: true,
 		});
 	} catch (error) {
-		console.log(error);
+		console.log("Error in createUser:", error);
+		res.status(500).json({
+			message: "Internal Server Error",
+			success: false,
+		});
 	}
 };
 
@@ -68,25 +71,36 @@ const loginUser = async (req, res) => {
 		});
 		return res
 			.status(201)
-			.cookie("token", token, { expiresIn: "5d", httpOnly: true })
+			.cookie("token", token, {
+				httpOnly: true,
+				maxAge: 5 * 24 * 60 * 60 * 1000,
+			})
 			.json({
 				message: `Welcome Back ${user?.name}`,
 				user,
 				success: true,
 			});
 	} catch (error) {
-		console.log(error);
+		console.log("Error in loginUser:", error);
+		res.status(500).json({
+			message: "Internal Server Error",
+			success: false,
+		});
 	}
 };
 
 const getUser = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const user = await User.findById({ _id: id }).select("-password");
+		const user = await User.findById(id).select("-password");
 		console.log(user);
 		res.status(201).json(user);
 	} catch (error) {
-		console.log(error);
+		console.log("Error in getUser:", error);
+		res.status(500).json({
+			message: "Internal Server Error",
+			success: false,
+		});
 	}
 };
 
